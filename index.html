@@ -59,9 +59,10 @@
     <aside id="main-sidebar" class="w-72 bg-white border-r border-slate-200 hidden md:flex md:flex-col z-20">
         <div class="p-6 border-b border-slate-100">
             <h1 class="text-xl font-extrabold text-slate-800 tracking-tight">HARAVAN HUB</h1>
-            <p class="text-[10px] text-slate-500 mt-1 uppercase font-bold tracking-widest">Executive Proposal v5.3</p>
+            <p class="text-[10px] text-slate-500 mt-1 uppercase font-bold tracking-widest">Executive Proposal v5.4</p>
         </div>
         <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+            <button onclick="showSection('intro')" id="nav-intro" class="w-full text-left px-4 py-3 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition-all active-nav">0. Giới Thiệu Chương Trình</button>
             <button onclick="showSection('overview')" id="nav-overview" class="w-full text-left px-4 py-3 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition-all">1. Chiến Lược Tự Cân Bằng</button>
             <button onclick="showSection('cost-structure')" id="nav-cost-structure" class="w-full text-left px-4 py-3 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition-all">2. Cơ Cấu P&L (Cost Cap)</button>
             <button onclick="showSection('career')" id="nav-career" class="w-full text-left px-4 py-3 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition-all">3. Lộ Trình Phát Triển Nhân Sự</button>
@@ -85,6 +86,68 @@
         </div>
 
         <div class="max-w-7xl mx-auto p-6 md:p-10 space-y-10 pb-24">
+
+            <!-- SECTION 0: INTRO (NEW) -->
+            <section id="intro" class="section-content animate-fade-in">
+                <div class="text-center mb-10">
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight uppercase">Haravan Franchise Hub</h1>
+                    <p class="text-xl text-indigo-600 font-medium max-w-3xl mx-auto">Chương trình Đối Tác Tăng Trưởng Toàn Diện: Biến năng lực bán hàng thành tài sản tích lũy trọn đời.</p>
+                </div>
+
+                <div class="card p-8 bg-gradient-to-r from-slate-900 to-slate-800 text-white shadow-2xl relative overflow-hidden mb-12">
+                    <div class="relative z-10 grid md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <h2 class="text-2xl font-bold mb-4 text-emerald-400 uppercase tracking-widest">Bạn Là Ai Trong Kỷ Nguyên Số?</h2>
+                            <p class="text-slate-300 leading-relaxed mb-6 text-sm">
+                                Haravan Hub không tìm kiếm những nhân viên bán hàng đơn thuần. Chúng tôi tìm kiếm những <strong>"Chủ Doanh Nghiệp Số"</strong> tương lai. Chúng tôi trao cho bạn nền tảng công nghệ, sản phẩm dẫn đầu thị trường và cơ chế chia sẻ doanh thu tốt nhất để bạn xây dựng đế chế kinh doanh của riêng mình ngay trong lòng Haravan.
+                            </p>
+                            <button onclick="showSection('overview')" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-lg font-bold uppercase text-xs transition-all shadow-lg flex items-center gap-2">
+                                Tìm hiểu cơ chế vận hành <span class="text-lg">→</span>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-4 bg-white/10 rounded-xl border border-white/10 backdrop-blur-sm">
+                                <div class="text-3xl mb-2">🏹</div>
+                                <div class="font-bold text-sm uppercase text-slate-200 mb-1">Thợ Săn (Hunter)</div>
+                                <div class="text-[10px] text-slate-400">Khai phá thị trường, nhận hoa hồng trực tiếp cao nhất ngành (lên tới 45%) ngay lập tức.</div>
+                            </div>
+                            <div class="p-4 bg-white/10 rounded-xl border border-white/10 backdrop-blur-sm">
+                                <div class="text-3xl mb-2">👑</div>
+                                <div class="font-bold text-sm uppercase text-slate-200 mb-1">Chủ Hub (Owner)</div>
+                                <div class="text-[10px] text-slate-400">Xây dựng và dẫn dắt đội ngũ, hưởng thu nhập thụ động bền vững từ hệ thống bạn tạo ra.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute right-0 bottom-0 opacity-5 text-9xl font-black text-white pointer-events-none -mr-10 -mb-10">HUB</div>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="card p-6 border-t-4 border-indigo-600 hover:-translate-y-1 transition-transform cursor-pointer" onclick="showSection('career')">
+                        <h3 class="font-black text-lg text-slate-800 mb-3 flex items-center gap-2">
+                            <span class="text-indigo-600 text-2xl">01.</span> Sở Hữu Vĩnh Viễn
+                        </h3>
+                        <p class="text-sm text-slate-600 leading-relaxed">
+                            Mọi khách hàng bạn mang về, mọi doanh số bạn tạo ra đều được <strong>tích lũy trọn đời</strong> để thăng hạng Level. Bạn làm càng lâu, vị thế và quyền lợi của bạn càng lớn, không bao giờ bị reset.
+                        </p>
+                    </div>
+                    <div class="card p-6 border-t-4 border-emerald-600 hover:-translate-y-1 transition-transform cursor-pointer" onclick="showSection('active-logic')">
+                        <h3 class="font-black text-lg text-slate-800 mb-3 flex items-center gap-2">
+                            <span class="text-emerald-600 text-2xl">02.</span> Thu Nhập Đa Tầng
+                        </h3>
+                        <p class="text-sm text-slate-600 leading-relaxed">
+                            Cơ cấu thu nhập thông minh: <strong>Hoa hồng trực tiếp</strong> (nuôi sống bản thân) + <strong>Thưởng hệ thống</strong> (làm giàu bền vững). Bạn có quyền tự quyết định mức thu nhập của mình dựa trên nỗ lực thực tế.
+                        </p>
+                    </div>
+                    <div class="card p-6 border-t-4 border-amber-500 hover:-translate-y-1 transition-transform cursor-pointer" onclick="showSection('sales-admin')">
+                        <h3 class="font-black text-lg text-slate-800 mb-3 flex items-center gap-2">
+                            <span class="text-amber-500 text-2xl">03.</span> Vận Hành Tinh Gọn
+                        </h3>
+                        <p class="text-sm text-slate-600 leading-relaxed">
+                            Bạn chỉ lo bán hàng và phát triển đội ngũ. Haravan HQ lo toàn bộ phần "khó nhằn": Sản phẩm, Kỹ thuật, CSKH, Kế toán và cung cấp Nền tảng quản trị số (App) hiện đại cho bạn.
+                        </p>
+                    </div>
+                </div>
+            </section>
 
             <!-- SECTION 1: OVERVIEW -->
             <section id="overview" class="section-content hidden animate-fade-in">
@@ -763,7 +826,7 @@
 
         // Initialize
         window.onload = () => {
-            showSection('overview');
+            showSection('intro');
             calculateIncome();
         };
     </script>
