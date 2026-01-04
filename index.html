@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo Cáo Chiến Lược Vận Hành Hub Haravan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F1F5F9;
+            color: #0F172A;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 260px;
+        }
+
+        .admin-chart-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #E2E8F0; }
+        ::-webkit-scrollbar-thumb { background: #94A3B8; border-radius: 3px; }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            transition: all 0.2s ease-in-out;
+            border: 1px solid #E2E8F0;
+        }
+        
+        .active-nav {
+            background-color: #EFF6FF !important;
+            color: #1D4ED8 !important;
+            font-weight: 700 !important;
+            border-left: 4px solid #2563EB !important;
+        }
+
+        .animate-fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .gradient-header { background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); }
+        .admin-tab-active { border-bottom: 3px solid #2563EB; color: #2563EB; font-weight: 700; background-color: #EFF6FF; }
+    </style>
+</head>
+<body class="bg-slate-100 flex h-screen overflow-hidden text-slate-900">
+
+    <!-- Sidebar Navigation -->
+    <aside id="main-sidebar" class="w-72 bg-white border-r border-slate-200 hidden md:flex md:flex-col z-20">
+        <div class="p-6 border-b border-slate-100">
+            <h1 class="text-xl font-extrabold text-slate-800 tracking-tight">HARAVAN HUB</h1>
+            <p class="text-[10px] text-slate-500 mt-1 uppercase font-bold tracking-widest">Executive Proposal v5.3</p>
+        </div>
+        <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+            <button onclick="showSection('overview')" id="nav-overview" class="w-full text-left px-4 py-3 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition-all">1. Chiến Lược Tự Cân Bằng</button>
+            <button onclick="showSection('cost-structure')" id="nav-cost-structure" class="w-full text-left px-4 py-3 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition-all">2. Cơ Cấu P&L (Cost Cap)</button>
+            <button onclick="showSection('career')" id="nav-career" class="w-full text-left px-4 py-3 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition-all">3. Lộ Trình Phát Triển Nhân Sự</button>
+            <button onclick="showSection('active-logic')" id="nav-active-logic" class="w-full text-left px-4 py-3 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition-all">4. Cơ Chế Quản Trị Hiệu Suất</button>
+            <button onclick="showSection('simulator')" id="nav-simulator" class="w-full text-left px-4 py-3 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition-all">5. Mô Phỏng Dòng Tiền Sales</button>
+            <button onclick="showSection('risk-center')" id="nav-risk-center" class="w-full text-left px-4 py-3 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition-all">6. Phân Tích & Quản Trị Rủi Ro</button>
+            <button onclick="showSection('growth-mindset')" id="nav-growth-mindset" class="w-full text-left px-4 py-3 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition-all">7. Định Hướng Tư Duy Đối Tác</button>
+            <button onclick="showSection('sales-admin')" id="nav-sales-admin" class="w-full text-left px-4 py-3 rounded-lg text-sm text-indigo-700 bg-indigo-50 font-bold border-l-4 border-indigo-600 transition-all">8. Nền Tảng Quản Trị Số (Admin)</button>
+        </nav>
+        <div class="p-4 border-t border-slate-100 text-[10px] text-center text-slate-400">
+            Internal Use Only - BOD Presentation
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto relative bg-slate-100">
+        
+        <div class="md:hidden bg-white p-4 border-b flex justify-between items-center sticky top-0 z-20 shadow-sm">
+            <span class="font-bold text-slate-800 text-sm">Hub Strategy Presentation</span>
+            <button onclick="toggleSidebar()" class="text-slate-600 p-2 hover:bg-slate-100 rounded-lg">☰</button>
+        </div>
+
+        <div class="max-w-7xl mx-auto p-6 md:p-10 space-y-10 pb-24">
+
+            <!-- SECTION 1: OVERVIEW -->
+            <section id="overview" class="section-content hidden animate-fade-in">
+                <header class="mb-8 border-b border-slate-200 pb-4">
+                    <h2 class="text-3xl font-black text-slate-900 uppercase tracking-tight">Chiến Lược Tài Chính Tự Cân Bằng</h2>
+                    <p class="text-slate-600 mt-2">Mô hình quản trị nhằm giải quyết bài toán: Tăng trưởng quy mô Sales nhưng vẫn kiểm soát chặt chẽ biên lợi nhuận ròng.</p>
+                </header>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="card p-8 border-t-4 border-blue-600">
+                        <div class="mb-4 text-blue-600 text-3xl">🛡️</div>
+                        <h3 class="font-bold text-slate-900 uppercase text-sm mb-3">Nguyên tắc "Khóa Trần" (Fixed Cap)</h3>
+                        <p class="text-sm text-slate-600 leading-relaxed text-justify">
+                            Tổng chi phí hoa hồng (Trực tiếp + Gián tiếp) được khóa cứng ở mức <strong>45%</strong> trên doanh thu. HQ cam kết không phát sinh chi phí ẩn, đảm bảo biên lợi nhuận ròng (Net Margin) của công ty luôn ổn định ở mức 50% sau khi trừ chi phí vận hành.
+                        </p>
+                    </div>
+                    <div class="card p-8 border-t-4 border-emerald-600">
+                        <div class="mb-4 text-emerald-600 text-3xl">⚖️</div>
+                        <h3 class="font-bold text-slate-900 uppercase text-sm mb-3">Cơ chế "Tự Điều Tiết" (Self-Balancing)</h3>
+                        <p class="text-sm text-slate-600 leading-relaxed text-justify">
+                            Các khoản thưởng hiệu suất cao (Thưởng mật độ, Thưởng tăng tốc) <strong>KHÔNG</strong> lấy từ lợi nhuận công ty. Chúng được chi trả từ <strong>Quỹ Active Treo</strong> - nguồn tiền thu hồi từ các Sales hoạt động kém hiệu quả. Đây là cơ chế "Lấy mỡ nó rán nó", giảm thiểu rủi ro dòng tiền cho HQ.
+                        </p>
+                    </div>
+                    <div class="card p-8 border-t-4 border-amber-500">
+                        <div class="mb-4 text-amber-600 text-3xl">🧬</div>
+                        <h3 class="font-bold text-slate-900 uppercase text-sm mb-3">Định hướng "Scale-up" Bền Vững</h3>
+                        <p class="text-sm text-slate-600 leading-relaxed text-justify">
+                            Chuyển dịch từ mô hình trả lương cứng sang mô hình đối tác chia sẻ doanh thu (Revenue Share). Khuyến khích Sales tích lũy doanh thu để thăng hạng (Level Up) và xây dựng đội ngũ kế thừa, tạo ra mạng lưới chân rết tự vận hành.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: COST STRUCTURE -->
+            <section id="cost-structure" class="section-content hidden animate-fade-in">
+                <header class="mb-8 border-b border-slate-200 pb-4">
+                    <h2 class="text-3xl font-black text-slate-900 uppercase tracking-tight">Cơ Cấu P&L Dự Kiến (Cost Allocation)</h2>
+                    <p class="text-slate-600 mt-2">Phân bổ chi tiết ngân sách cho từng dòng doanh thu để minh bạch hóa dòng tiền.</p>
+                </header>
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <div class="card p-6">
+                        <h4 class="font-bold text-slate-800 mb-6 text-sm uppercase text-center tracking-widest border-b pb-2">1. SaaS Bán Mới (Cap 50%)</h4>
+                        <div class="chart-container"><canvas id="chartSaaS"></canvas></div>
+                        <div class="mt-6 space-y-3 text-xs">
+                            <div class="flex justify-between border-b border-dashed pb-1"><span>Hoa hồng Thị trường (Sales + Leader):</span><span class="font-bold text-blue-600">45%</span></div>
+                            <div class="flex justify-between border-b border-dashed pb-1"><span>Vận hành Sales Center (CRM, Training):</span><span class="font-bold text-amber-600">5%</span></div>
+                            <div class="flex justify-between pt-1"><span>Biên Lợi Nhuận Công Ty:</span><span class="font-black text-emerald-600">50%</span></div>
+                        </div>
+                    </div>
+                    <div class="card p-6">
+                        <h4 class="font-bold text-slate-800 mb-6 text-sm uppercase text-center tracking-widest border-b pb-2">2. Dịch Vụ GTGT (Cap 20%)</h4>
+                        <div class="chart-container"><canvas id="chartService"></canvas></div>
+                        <div class="mt-6 space-y-3 text-xs">
+                            <div class="flex justify-between border-b border-dashed pb-1"><span>Hoa hồng Trực tiếp:</span><span class="font-bold text-blue-600">15%</span></div>
+                            <div class="flex justify-between border-b border-dashed pb-1"><span>Hoa hồng Quản lý & Vận hành:</span><span class="font-bold text-amber-600">5%</span></div>
+                            <div class="flex justify-between pt-1"><span>Biên Lợi Nhuận Công Ty:</span><span class="font-black text-emerald-600">80%</span></div>
+                        </div>
+                    </div>
+                    <div class="card p-6">
+                        <h4 class="font-bold text-slate-800 mb-6 text-sm uppercase text-center tracking-widest border-b pb-2">3. Gia Hạn Tái Ký (Cap 15%)</h4>
+                        <div class="chart-container"><canvas id="chartRenew"></canvas></div>
+                        <div class="mt-6 space-y-3 text-xs">
+                            <div class="flex justify-between border-b border-dashed pb-1"><span>Thưởng Duy trì (Retention Bonus):</span><span class="font-bold text-blue-600">13%</span></div>
+                            <div class="flex justify-between border-b border-dashed pb-1"><span>Chi phí Hạ tầng & CSKH:</span><span class="font-bold text-amber-600">2%</span></div>
+                            <div class="flex justify-between pt-1"><span>Biên Lợi Nhuận Công Ty:</span><span class="font-black text-emerald-600">85%</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: CAREER -->
+            <section id="career" class="section-content hidden animate-fade-in">
+                <header class="mb-8 border-b border-slate-200 pb-4">
+                    <h2 class="text-3xl font-black text-slate-900 uppercase tracking-tight">Khung Năng Lực & Lộ Trình Thăng Tiến</h2>
+                    <p class="text-slate-600 mt-2">Hệ thống cấp bậc được thiết kế để khuyến khích sự gắn bó lâu dài và tích lũy giá trị.</p>
+                </header>
+                <div class="card overflow-hidden shadow-md">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-800 text-white font-bold uppercase text-xs tracking-wider">
+                            <tr>
+                                <th class="p-5">Cấp Bậc (Rank)</th>
+                                <th class="p-5">Điều Kiện Tích Lũy (SaaS)</th>
+                                <th class="p-5">Quyền Lợi Direct</th>
+                                <th class="p-5">KPI Active (Bắt buộc)</th>
+                                <th class="p-5">Vai Trò Kỳ Vọng</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="p-5 font-bold text-indigo-700">Seed 1 (Tân binh)</td>
+                                <td class="p-5 text-slate-600">0 - 200 Triệu</td>
+                                <td class="p-5 font-bold text-emerald-600">30%</td>
+                                <td class="p-5 font-bold text-orange-600">30 Triệu</td>
+                                <td class="p-5 text-xs text-slate-500 italic">Học sản phẩm, khai thác khách hàng mới.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="p-5 font-bold text-indigo-700">Seed 2 (Chuyên viên)</td>
+                                <td class="p-5 text-slate-600">> 200 Triệu</td>
+                                <td class="p-5 font-bold text-emerald-600">35%</td>
+                                <td class="p-5 font-bold text-orange-600">30 Triệu</td>
+                                <td class="p-5 text-xs text-slate-500 italic">Tư vấn chuyên sâu, bắt đầu có khách tái ký.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="p-5 font-bold text-indigo-700">Leader (Trưởng nhóm)</td>
+                                <td class="p-5 text-slate-600">> 600 Triệu</td>
+                                <td class="p-5 font-bold text-emerald-600">40%</td>
+                                <td class="p-5 font-bold text-orange-600">30 Triệu</td>
+                                <td class="p-5 text-xs text-slate-500 italic">Tuyển dụng, đào tạo F1, quản lý nhóm nhỏ.</td>
+                            </tr>
+                            <tr class="bg-indigo-50/50 hover:bg-indigo-50 transition-colors">
+                                <td class="p-5 font-bold text-indigo-900">Hub Master (Chủ Hub)</td>
+                                <td class="p-5 text-slate-800 font-bold">> 2.5 Tỷ</td>
+                                <td class="p-5 font-bold text-emerald-600">45%</td>
+                                <td class="p-5 font-bold text-orange-600">30 Triệu</td>
+                                <td class="p-5 text-xs text-slate-700 font-bold">Vận hành Hub độc lập, chịu trách nhiệm P&L vùng.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- SECTION 4: ACTIVE LOGIC -->
+            <section id="active-logic" class="section-content hidden animate-fade-in">
+                <header class="mb-8 border-b border-slate-200 pb-4">
+                    <h2 class="text-3xl font-black text-slate-900 uppercase tracking-tight">Cơ Chế "Sàng Lọc" Hiệu Suất (Active)</h2>
+                    <p class="text-slate-600 mt-2">Nguyên tắc: "Không có đóng góp mới, không hưởng thụ thành quả cũ".</p>
+                </header>
+                <div class="grid md:grid-cols-2 gap-10">
+                    <div class="card p-6 border-2 border-slate-200">
+                        <h4 class="font-bold text-xs uppercase mb-6 text-slate-500 text-center tracking-widest">Mô hình chi trả thu nhập thụ động</h4>
+                        <div class="chart-container"><canvas id="activeCurveChart"></canvas></div>
+                        <p class="text-[10px] text-center text-slate-400 mt-4 italic">*Biểu đồ chỉ áp dụng cho Hoa hồng Quản lý và Gia hạn. Hoa hồng trực tiếp luôn nhận đủ.</p>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="p-6 bg-white border-l-4 border-indigo-600 shadow-sm rounded-r-lg">
+                            <h5 class="font-black text-indigo-900 uppercase text-sm mb-2">1. Bảo vệ nguồn sống (Direct Sales)</h5>
+                            <p class="text-sm text-slate-600 leading-relaxed">
+                                Doanh thu bán hàng trực tiếp là huyết mạch của Sales. HQ cam kết chi trả <strong>100% tỷ lệ hoa hồng</strong> theo cấp bậc cho khoản này, bất kể KPI, để đảm bảo nhân sự luôn có thu nhập cơ bản.
+                            </p>
+                        </div>
+                        <div class="p-6 bg-amber-50 border-l-4 border-amber-500 shadow-sm rounded-r-lg">
+                            <h5 class="font-black text-amber-900 uppercase text-sm mb-2">2. Điều tiết đặc quyền (Passive Income)</h5>
+                            <p class="text-sm text-slate-700 leading-relaxed">
+                                Thu nhập thụ động (Quản lý, Gia hạn) là đặc quyền. Để nhận, Sales phải chứng minh năng lực qua mốc <strong>Active 30 Triệu</strong>.
+                                <br>• < 50% (15tr): Nhận 0đ thụ động.
+                                <br>• 50% - 99%: Nhận theo tỷ lệ.
+                                <br>• ≥ 100%: Nhận trọn vẹn.
+                            </p>
+                        </div>
+                        <div class="p-6 bg-emerald-50 border-l-4 border-emerald-500 shadow-sm rounded-r-lg">
+                            <h5 class="font-black text-emerald-900 uppercase text-sm mb-2">3. Ý nghĩa quản trị</h5>
+                            <p class="text-sm text-emerald-800 leading-relaxed">
+                                Loại bỏ hoàn toàn tình trạng "Zombie" (Nhân sự cũ ngồi mát ăn bát vàng). Dòng tiền thụ động bị cắt giảm sẽ quay về <strong>Quỹ Chiến Lược</strong> để tái đầu tư cho những người làm tốt.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 5: SIMULATOR -->
+            <section id="simulator" class="section-content hidden animate-fade-in">
+                <header class="mb-8 border-b border-slate-200 pb-4 text-center">
+                    <h2 class="text-3xl font-black text-indigo-900 uppercase tracking-tight">Công Cụ Hoạch Định Thu Nhập (Simulator)</h2>
+                    <p class="text-slate-600 mt-2">Minh bạch hóa cách tính toán dòng tiền cho Đại lý.</p>
+                </header>
+                <div class="grid lg:grid-cols-12 gap-8">
+                    <div class="lg:col-span-5 space-y-6">
+                        <div class="card p-6 border-t-4 border-indigo-600">
+                            <h3 class="text-xs font-black text-slate-400 uppercase mb-4 tracking-widest">1. Thiết lập Cấp bậc & Đội ngũ</h3>
+                            <div class="space-y-4">
+                                <label class="block">
+                                    <span class="text-xs font-bold text-slate-700">Cấp bậc hiện tại</span>
+                                    <select id="sim-rank" class="mt-1 block w-full border-slate-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border" onchange="calculateIncome()">
+                                        <option value="seed1">Seed 1 (Direct 30%)</option>
+                                        <option value="seed2">Seed 2 (Direct 35%)</option>
+                                        <option value="leader">Leader (Direct 40%)</option>
+                                        <option value="master" selected>Hub Master (Direct 45%)</option>
+                                    </select>
+                                </label>
+                                <div class="p-4 bg-slate-100 rounded-lg">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-xs font-bold text-slate-600 uppercase">Số nhánh Active bền vững (>3 tháng)</span>
+                                        <span id="branch-count" class="bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded">0</span>
+                                    </div>
+                                    <input type="range" id="sim-branches" min="0" max="15" value="0" class="w-full accent-indigo-600 h-2 bg-slate-300 rounded-lg appearance-none cursor-pointer" oninput="calculateIncome()">
+                                    <p class="text-[10px] text-slate-400 mt-2 italic text-right">Dùng để tính thưởng mật độ (Density Bonus)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card p-6 border-t-4 border-emerald-600">
+                            <h3 class="text-xs font-black text-slate-400 uppercase mb-4 tracking-widest">2. Kết quả kinh doanh tháng</h3>
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">SaaS Cá Nhân</label>
+                                    <input type="number" id="sim-saas" placeholder="0" class="w-full border-slate-300 rounded-md p-2 text-right font-mono font-bold text-slate-700 border focus:ring-emerald-500 focus:border-emerald-500" oninput="calculateIncome()">
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Dịch Vụ Cá Nhân</label>
+                                    <input type="number" id="sim-service" placeholder="0" class="w-full border-slate-300 rounded-md p-2 text-right font-mono font-bold text-slate-700 border focus:ring-emerald-500 focus:border-emerald-500" oninput="calculateIncome()">
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="text-[10px] font-bold text-indigo-500 uppercase block mb-1">Tổng Doanh Thu Cả Hub (Hub Vol)</label>
+                                    <input type="number" id="sim-hub-vol" placeholder="0" class="w-full border-indigo-200 bg-indigo-50 rounded-md p-2 text-right font-mono font-bold text-indigo-700 border focus:ring-indigo-500 focus:border-indigo-500" oninput="calculateIncome()">
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-bold text-amber-500 uppercase block mb-1">HH Gián tiếp & Gia hạn Tiềm năng</label>
+                                    <input type="number" id="sim-passive-pot" placeholder="0" class="w-full border-amber-200 bg-amber-50 rounded-md p-2 text-right font-mono font-bold text-amber-700 border focus:ring-amber-500 focus:border-amber-500" oninput="calculateIncome()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-7">
+                        <div class="card h-full bg-slate-900 text-white p-8 relative overflow-hidden shadow-2xl flex flex-col justify-between">
+                            <div class="absolute top-0 right-0 p-6 opacity-5 text-9xl font-black italic select-none">CASH</div>
+                            
+                            <div class="relative z-10">
+                                <div class="flex justify-between items-end border-b border-white/10 pb-6 mb-6">
+                                    <div>
+                                        <h4 class="text-xs uppercase font-bold text-emerald-400 tracking-widest mb-1">Tổng Thực Nhận (Net Income)</h4>
+                                        <div class="text-5xl lg:text-6xl font-black tracking-tighter" id="res-final-income">0đ</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-[10px] uppercase font-bold text-slate-400 mb-1">Tỷ lệ Active</div>
+                                        <div class="text-3xl font-black text-indigo-400" id="res-active-ratio">0%</div>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-6">
+                                    <div class="p-4 bg-white/5 rounded-lg border border-white/10">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                                            <span class="text-[10px] uppercase font-bold text-slate-400">Thu nhập Chủ động</span>
+                                        </div>
+                                        <div class="text-xl font-bold" id="res-direct-val">0đ</div>
+                                        <p class="text-[10px] text-slate-500 mt-1">Từ bán hàng trực tiếp (Không bị cắt)</p>
+                                    </div>
+                                    <div class="p-4 bg-white/5 rounded-lg border border-white/10">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <div class="w-2 h-2 rounded-full bg-amber-500"></div>
+                                            <span class="text-[10px] uppercase font-bold text-slate-400">Thu nhập Thụ động</span>
+                                        </div>
+                                        <div class="text-xl font-bold" id="res-passive-total">0đ</div>
+                                        <p class="text-[10px] text-slate-500 mt-1">Từ hệ thống & Tái ký (Theo Active)</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-8 pt-6 border-t border-white/10 relative z-10 flex justify-between text-[10px] text-slate-400 font-mono">
+                                <span>+ Thưởng Mật Độ (Density Bonus): <span id="res-density-val" class="text-emerald-400">0đ</span></span>
+                                <span>- Khấu trừ về HQ (Suspended): <span id="res-suspended-val" class="text-red-400">0đ</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 6: RISK MANAGEMENT -->
+            <section id="risk-center" class="section-content hidden animate-fade-in">
+                <header class="mb-8 border-b border-slate-200 pb-4">
+                    <h2 class="text-3xl font-black text-slate-900 uppercase tracking-tight">Ma Trận Quản Trị Rủi Ro</h2>
+                    <p class="text-slate-600 mt-2">Các kịch bản rủi ro chính và giải pháp đối ứng của hệ thống.</p>
+                </header>
+                <div class="grid md:grid-cols-2 gap-10 mb-8">
+                    <div class="card p-6">
+                        <h4 class="font-bold text-xs uppercase mb-6 text-center text-slate-500 tracking-widest">Radar Đánh Giá Tác Động Rủi Ro</h4>
+                        <div class="chart-container"><canvas id="riskRadarChart"></canvas></div>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="group p-5 bg-white border-l-4 border-red-500 shadow-sm hover:shadow-md transition-all rounded-r-lg">
+                            <h5 class="font-black text-slate-800 text-sm uppercase mb-2 flex justify-between">
+                                <span>1. Rủi ro Biến động Nhân sự (Turnover)</span>
+                                <span class="text-red-500 text-xs">High Impact</span>
+                            </h5>
+                            <p class="text-sm text-slate-600 leading-relaxed mb-2"><strong>Vấn đề:</strong> Key Sales nghỉ việc, kéo theo sự sụt giảm doanh số nhánh.</p>
+                            <p class="text-xs text-slate-500 bg-slate-50 p-2 rounded"><strong>Giải pháp:</strong> Chính sách "Vùng đệm nhân sự". Khuyến khích Leader luôn duy trì 2-3 nhân sự mới (Ân hạn) để sẵn sàng thay thế. Thưởng mật độ (8-12 nhánh) tạo biên độ an toàn.</p>
+                        </div>
+                        <div class="group p-5 bg-white border-l-4 border-amber-500 shadow-sm hover:shadow-md transition-all rounded-r-lg">
+                            <h5 class="font-black text-slate-800 text-sm uppercase mb-2 flex justify-between">
+                                <span>2. Rủi ro "Chay Ì" Hệ Thống</span>
+                                <span class="text-amber-500 text-xs">Medium Impact</span>
+                            </h5>
+                            <p class="text-sm text-slate-600 leading-relaxed mb-2"><strong>Vấn đề:</strong> Sales cũ chỉ ngồi hưởng thụ nhập thụ động, không bán mới.</p>
+                            <p class="text-xs text-slate-500 bg-slate-50 p-2 rounded"><strong>Giải pháp:</strong> Áp dụng Active 30tr làm điều kiện kiên quyết. Không Active = Cắt toàn bộ thụ động. Chuyển tiền đó vào quỹ thưởng người mới.</p>
+                        </div>
+                        <div class="group p-5 bg-white border-l-4 border-emerald-500 shadow-sm hover:shadow-md transition-all rounded-r-lg">
+                            <h5 class="font-black text-slate-800 text-sm uppercase mb-2 flex justify-between">
+                                <span>3. Rủi ro Vỡ Quỹ Thưởng (Financial Burst)</span>
+                                <span class="text-emerald-500 text-xs">Controlled</span>
+                            </h5>
+                            <p class="text-sm text-slate-600 leading-relaxed mb-2"><strong>Vấn đề:</strong> Hệ thống hoạt động quá tốt, tiền thưởng vượt ngân sách.</p>
+                            <p class="text-xs text-slate-500 bg-slate-50 p-2 rounded"><strong>Giải pháp:</strong> Cost Cap 50% cứng. Các khoản thưởng thêm (Bonus) chỉ được chi từ nguồn "Suspended Fund" (Dòng tiền treo). Hệ thống tự cân bằng, HQ không bù lỗ.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 7: GROWTH MINDSET -->
+            <section id="growth-mindset" class="section-content hidden animate-fade-in">
+                <header class="mb-10 text-center">
+                    <h2 class="text-4xl font-black text-slate-900 uppercase tracking-tighter">Định Hướng Tâm Thế Đối Tác</h2>
+                    <p class="text-slate-600 mt-4 text-lg max-w-2xl mx-auto italic">"Không chỉ là nhân viên bán hàng, bạn là chủ sở hữu của một doanh nghiệp trong lòng Haravan."</p>
+                </header>
+
+                <div class="grid md:grid-cols-3 gap-8 mb-12">
+                    <div class="card p-8 border-t-8 border-indigo-600 hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-4xl mb-6 text-indigo-600">🎯</div>
+                        <h4 class="font-black text-slate-900 uppercase text-sm mb-4">Focus on Direct Sales</h4>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                            Đừng coi bán hàng là khổ cực. Đó là cách duy nhất để bạn tích lũy XP thăng hạng. Doanh số trực tiếp là nền tảng vững chắc nhất, được bảo vệ 100% quyền lợi.
+                        </p>
+                        <div class="inline-block px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-full">#SurvivalSkill</div>
+                    </div>
+                    <div class="card p-8 border-t-8 border-emerald-500 hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-4xl mb-6 text-emerald-500">🧱</div>
+                        <h4 class="font-black text-slate-900 uppercase text-sm mb-4">Build Your Assets</h4>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                            Mỗi nhân sự bạn đào tạo thành công (Active > 3 tháng) là một "Cổ phiếu" trả cổ tức hàng tháng. Đừng quản lý con người, hãy quản lý danh mục đầu tư nhân sự của bạn.
+                        </p>
+                        <div class="inline-block px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full">#PassiveIncomeMachine</div>
+                    </div>
+                    <div class="card p-8 border-t-8 border-amber-500 hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-4xl mb-6 text-amber-500">🚀</div>
+                        <h4 class="font-black text-slate-900 uppercase text-sm mb-4">Scale Up Or Die</h4>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                            Đừng dừng lại ở 3-5 nhánh. Hãy nhắm tới 12 nhánh để đạt mốc thưởng tối đa (+10%). Quy mô càng lớn, rủi ro cá nhân càng nhỏ.
+                        </p>
+                        <div class="inline-block px-3 py-1 bg-amber-50 text-amber-700 text-xs font-bold rounded-full">#GrowthMindset</div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 text-white rounded-2xl p-10 text-center shadow-xl relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h3 class="text-2xl font-black uppercase mb-4 text-emerald-400">Lời Kết Từ Ban Lãnh Đạo</h3>
+                        <p class="text-lg text-slate-300 max-w-3xl mx-auto leading-relaxed">
+                            "Chính sách này không tạo ra việc làm, nó tạo ra sự nghiệp. Chúng tôi cung cấp nền tảng, công nghệ và vốn (sản phẩm). Bạn bỏ ra năng lực và sự cam kết. Hãy tận dụng cơ chế này để xây dựng sự thịnh vượng cho chính bạn."
+                        </p>
+                    </div>
+                    <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                </div>
+            </section>
+
+            <!-- SECTION 8: SALES ADMIN -->
+            <section id="sales-admin" class="section-content hidden animate-fade-in">
+                <header class="mb-8 border-b border-slate-200 pb-4 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div>
+                        <h2 class="text-3xl font-black text-slate-900 uppercase tracking-tight">Sales Admin Portal</h2>
+                        <p class="text-slate-600 mt-2">Hệ thống quản trị tập trung dành cho Partner và HQ.</p>
+                    </div>
+                    <div class="flex bg-white p-1 rounded-lg border border-slate-200 shadow-sm">
+                        <button onclick="switchAdminTab('sales-view')" id="tab-sales-view" class="px-6 py-2 text-xs font-bold rounded-md admin-tab-active transition-all">Partner View</button>
+                        <button onclick="switchAdminTab('hq-view')" id="tab-hq-view" class="px-6 py-2 text-xs font-bold rounded-md text-slate-500 hover:text-slate-700 transition-all">HQ View</button>
+                    </div>
+                </header>
+
+                <!-- Partner View Module -->
+                <div id="admin-sales-view" class="space-y-8">
+                    <!-- KPI Cards -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="card p-5 bg-white border-l-4 border-indigo-600">
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Doanh Thu Trực Tiếp</div>
+                            <div class="text-2xl font-black text-slate-800 mt-1">42.5M</div>
+                            <div class="text-[10px] text-emerald-500 font-bold mt-2">▲ 15% vs tháng trước</div>
+                        </div>
+                        <div class="card p-5 bg-white border-l-4 border-emerald-500">
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Thu Nhập Thụ Động</div>
+                            <div class="text-2xl font-black text-slate-800 mt-1">18.2M</div>
+                            <div class="text-[10px] text-slate-500 font-bold mt-2">Từ 5 nhánh Active</div>
+                        </div>
+                        <div class="card p-5 bg-white border-l-4 border-amber-500">
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Tích Lũy Lên Rank</div>
+                            <div class="text-2xl font-black text-slate-800 mt-1">1.8 / 2.5 Tỷ</div>
+                            <div class="w-full bg-slate-100 h-1.5 rounded-full mt-2"><div class="bg-amber-500 h-1.5 rounded-full" style="width: 72%"></div></div>
+                        </div>
+                        <div class="card p-5 bg-white border-l-4 border-purple-500">
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Ví Hoa Hồng</div>
+                            <div class="text-2xl font-black text-purple-700 mt-1">60.7M</div>
+                            <button class="mt-2 text-[10px] font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded hover:bg-purple-100 transition-colors w-full">Rút Tiền Ngay</button>
+                        </div>
+                    </div>
+
+                    <div class="grid lg:grid-cols-3 gap-8">
+                        <!-- Main Content Left -->
+                        <div class="lg:col-span-2 space-y-8">
+                            <!-- Team List -->
+                            <div class="card p-6">
+                                <h4 class="font-black text-xs uppercase text-slate-700 mb-6 flex justify-between items-center">
+                                    <span>Danh Sách Nhánh Trực Thuộc</span>
+                                    <span class="bg-slate-100 text-slate-500 px-2 py-1 rounded text-[10px]">Tháng 01/2024</span>
+                                </h4>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left text-[11px]">
+                                        <thead class="bg-slate-50 text-slate-500 uppercase font-bold border-b">
+                                            <tr>
+                                                <th class="p-3">Tên Đối Tác</th>
+                                                <th class="p-3">Cấp Bậc</th>
+                                                <th class="p-3 text-right">Doanh Thu (SaaS)</th>
+                                                <th class="p-3 text-right">Dịch Vụ</th>
+                                                <th class="p-3 text-center">Trạng Thái</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y text-slate-700">
+                                            <tr>
+                                                <td class="p-3 font-bold">Nguyễn Văn A</td><td class="p-3">Leader</td><td class="p-3 text-right font-mono">85,000,000</td><td class="p-3 text-right font-mono">12,000,000</td><td class="p-3 text-center"><span class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded font-bold">Active</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-3 font-bold">Trần Thị B</td><td class="p-3">Seed 2</td><td class="p-3 text-right font-mono">32,000,000</td><td class="p-3 text-right font-mono">5,000,000</td><td class="p-3 text-center"><span class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded font-bold">Active</span></td>
+                                            </tr>
+                                            <tr class="bg-red-50/50">
+                                                <td class="p-3 font-bold text-slate-500">Lê Văn C</td><td class="p-3">Seed 1</td><td class="p-3 text-right font-mono text-red-500">8,000,000</td><td class="p-3 text-right font-mono">0</td><td class="p-3 text-center"><span class="text-red-600 bg-red-100 px-2 py-0.5 rounded font-bold">Inactive</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Analytics Charts -->
+                            <div class="card p-6">
+                                <h4 class="font-black text-xs uppercase text-slate-700 mb-6">Phân Tích Xu Hướng Kinh Doanh</h4>
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div class="admin-chart-container"><canvas id="revenueHistoryChart"></canvas></div>
+                                    <div class="admin-chart-container"><canvas id="contractDistributionChart"></canvas></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Sidebar -->
+                        <div class="space-y-6">
+                            <!-- Quick Action -->
+                            <div class="card p-6 bg-gradient-to-br from-indigo-600 to-indigo-800 text-white shadow-lg">
+                                <h4 class="font-bold text-xs uppercase tracking-widest mb-4 flex items-center gap-2">
+                                    <span class="text-lg">🚀</span> Kích Hoạt Dịch Vụ Nhanh
+                                </h4>
+                                <div class="space-y-3">
+                                    <input type="text" placeholder="Nhập Mã HĐ / SĐT Khách hàng" class="w-full bg-white/20 border border-white/30 p-3 rounded text-xs text-white placeholder-white/50 focus:outline-none focus:bg-white/30 transition-all">
+                                    <select class="w-full bg-white/20 border border-white/30 p-3 rounded text-xs text-white focus:outline-none focus:bg-white/30 transition-all cursor-pointer">
+                                        <option class="text-slate-900">Gói: Omnichannel Pro (12T)</option>
+                                        <option class="text-slate-900">Gói: Social Commerce (24T)</option>
+                                        <option class="text-slate-900">Dịch vụ: Setup Gian hàng</option>
+                                    </select>
+                                    <button class="w-full bg-white text-indigo-800 font-black text-xs uppercase py-3 rounded hover:bg-indigo-50 transition-all shadow-md">Kích Hoạt Ngay</button>
+                                </div>
+                                <p class="text-[9px] text-white/60 mt-3 text-center italic">Yêu cầu sẽ được xử lý trong 5-10 phút.</p>
+                            </div>
+
+                            <!-- Perks -->
+                            <div class="card p-6">
+                                <h4 class="font-black text-xs uppercase text-slate-700 mb-4">🎁 Đặc Quyền Của Bạn (Hub Master)</h4>
+                                <ul class="space-y-3">
+                                    <li class="flex items-center gap-3 p-2 bg-indigo-50 rounded border border-indigo-100">
+                                        <span class="text-lg">🎟️</span>
+                                        <div class="text-[10px]">
+                                            <div class="font-bold text-indigo-900">Voucher 10% (x5)</div>
+                                            <div class="text-indigo-600">Dành cho khách hàng mới</div>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-center gap-3 p-2 bg-emerald-50 rounded border border-emerald-100">
+                                        <span class="text-lg">📢</span>
+                                        <div class="text-[10px]">
+                                            <div class="font-bold text-emerald-900">Marketing Support</div>
+                                            <div class="text-emerald-600">Nhận 10 Lead HQ/tháng</div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HQ View Module -->
+                <div id="admin-hq-view" class="hidden space-y-8 animate-fade-in">
+                    <div class="card p-10 bg-slate-900 text-white text-center shadow-2xl relative overflow-hidden">
+                        <div class="relative z-10">
+                            <h3 class="text-3xl font-black text-emerald-400 uppercase italic tracking-tighter mb-8">Haravan Master Control Center</h3>
+                            <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
+                                <div><div class="text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-1">Total Active Hubs</div><div class="text-4xl font-black">124</div></div>
+                                <div><div class="text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-1">Strategic Fund</div><div class="text-4xl font-black text-amber-400">4.2 Tỷ</div></div>
+                                <div><div class="text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-1">Avg. Retention Rate</div><div class="text-4xl font-black text-indigo-400">85.4%</div></div>
+                                <div><div class="text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-1">System Health</div><div class="text-4xl font-black text-emerald-500">Stable</div></div>
+                            </div>
+                        </div>
+                        <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-slate-900 via-transparent to-slate-900 z-0"></div>
+                    </div>
+                    
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <div class="card p-8 flex items-center justify-center bg-slate-50 border-dashed border-2 border-slate-300">
+                            <p class="text-slate-400 text-sm italic font-bold">[Vị trí hiển thị Bản đồ nhiệt (Heatmap) doanh số theo khu vực địa lý]</p>
+                        </div>
+                        <div class="card p-8">
+                            <h4 class="font-black text-xs uppercase text-slate-700 mb-6 tracking-widest">Cảnh Báo Sớm (Early Warning)</h4>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-3 bg-red-50 border-l-4 border-red-500 rounded">
+                                    <span class="text-xs font-bold text-red-900">Hub Cần Thơ - KV2</span>
+                                    <span class="text-[10px] font-bold text-red-600 uppercase">Risk: High Turnover</span>
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-amber-50 border-l-4 border-amber-500 rounded">
+                                    <span class="text-xs font-bold text-amber-900">Hub Đà Nẵng - KV1</span>
+                                    <span class="text-[10px] font-bold text-amber-600 uppercase">Risk: Low Active Rate</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // --- DATA CONSTANTS ---
+        const ACTIVE_TARGET = 30000000;
+        const ACTIVE_FLOOR = 15000000;
+        const SERVICE_RATE = 0.15;
+        const RANKS = {
+            'seed1': { saasRate: 0.30, title: 'Seed 1' },
+            'seed2': { saasRate: 0.35, title: 'Seed 2' },
+            'leader': { saasRate: 0.40, title: 'Leader' },
+            'master': { saasRate: 0.45, title: 'Hub Master' }
+        };
+
+        // --- SAFE DOM HELPER ---
+        function safeUpdateText(id, val) {
+            const el = document.getElementById(id);
+            if (el) el.innerText = val;
+        }
+
+        function safeClassToggle(id, cls, condition) {
+            const el = document.getElementById(id);
+            if (el) el.classList.toggle(cls, condition);
+        }
+
+        // --- NAVIGATION ---
+        function showSection(sectionId) {
+            document.querySelectorAll('.section-content').forEach(el => el.classList.add('hidden'));
+            const target = document.getElementById(sectionId);
+            if (target) target.classList.remove('hidden');
+            
+            document.querySelectorAll('nav button').forEach(el => el.classList.remove('active-nav'));
+            const btn = document.getElementById('nav-' + sectionId);
+            if (btn) btn.classList.add('active-nav');
+
+            // Trigger charts based on section
+            if (sectionId === 'cost-structure') renderCostCharts();
+            if (sectionId === 'active-logic') renderActiveCurve();
+            if (sectionId === 'risk-center') renderRiskRadar();
+            if (sectionId === 'sales-admin') renderAdminCharts();
+            
+            // Mobile Sidebar Close
+            if (window.innerWidth < 768) {
+                const sidebar = document.getElementById('main-sidebar');
+                if (sidebar && !sidebar.classList.contains('hidden')) toggleSidebar();
+            }
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('main-sidebar');
+            if (sidebar) {
+                sidebar.classList.toggle('hidden');
+                sidebar.classList.toggle('fixed');
+                sidebar.classList.toggle('h-full');
+                sidebar.classList.toggle('shadow-2xl');
+                sidebar.classList.toggle('top-0');
+                sidebar.classList.toggle('left-0');
+            }
+        }
+
+        // --- ADMIN TABS ---
+        function switchAdminTab(tabId) {
+            const v1 = document.getElementById('admin-sales-view');
+            const v2 = document.getElementById('admin-hq-view');
+            const t1 = document.getElementById('tab-sales-view');
+            const t2 = document.getElementById('tab-hq-view');
+            
+            if (v1 && v2 && t1 && t2) {
+                v1.classList.toggle('hidden', tabId !== 'sales-view');
+                v2.classList.toggle('hidden', tabId !== 'hq-view');
+                
+                if (tabId === 'sales-view') {
+                    t1.classList.add('admin-tab-active');
+                    t1.classList.remove('text-slate-500');
+                    t2.classList.remove('admin-tab-active');
+                    t2.classList.add('text-slate-500');
+                    renderAdminCharts();
+                } else {
+                    t2.classList.add('admin-tab-active');
+                    t2.classList.remove('text-slate-500');
+                    t1.classList.remove('admin-tab-active');
+                    t1.classList.add('text-slate-500');
+                }
+            }
+        }
+
+        // --- CALCULATION ENGINE ---
+        function calculateIncome() {
+            const rankKey = document.getElementById('sim-rank')?.value || 'master';
+            const branches = parseInt(document.getElementById('sim-branches')?.value || 0); 
+            const saasNew = parseFloat(document.getElementById('sim-saas')?.value || 0);
+            const serviceNew = parseFloat(document.getElementById('sim-service')?.value || 0);
+            const hubVol = parseFloat(document.getElementById('sim-hub-vol')?.value || 0);
+            const passivePot = parseFloat(document.getElementById('sim-passive-pot')?.value || 0);
+
+            const rankData = RANKS[rankKey];
+            safeUpdateText('branch-count', branches);
+
+            const personalRev = saasNew + serviceNew;
+            let activeRatio = personalRev / ACTIVE_TARGET;
+            let multiplier = activeRatio >= 1 ? 1 : (personalRev >= ACTIVE_FLOOR ? activeRatio : 0);
+
+            // Direct: 100% Protection
+            const directIncome = (saasNew * rankData.saasRate) + (serviceNew * SERVICE_RATE);
+            
+            // Passive: Active Filter
+            const passiveFinalFromPot = passivePot * multiplier;
+            
+            // Density Bonus: Branch Tier
+            let densityRate = 0;
+            if (branches >= 12) densityRate = 0.10;
+            else if (branches >= 8) densityRate = 0.08;
+            else if (branches >= 5) densityRate = 0.05;
+            else if (branches >= 3) densityRate = 0.02;
+
+            // Density only paid if Personal Active >= 50%
+            const densityBonus = (personalRev >= ACTIVE_FLOOR) ? (hubVol * densityRate) : 0;
+
+            const finalIncome = directIncome + passiveFinalFromPot + densityBonus;
+            const suspended = passivePot - passiveFinalFromPot;
+
+            safeUpdateText('res-direct-val', formatCurrency(directIncome));
+            safeUpdateText('res-passive-total', formatCurrency(passiveFinalFromPot + densityBonus));
+            safeUpdateText('res-density-val', formatCurrency(densityBonus));
+            safeUpdateText('res-suspended-val', formatCurrency(suspended));
+            safeUpdateText('res-active-ratio', Math.round(activeRatio * 100) + '%');
+            safeUpdateText('res-final-income', formatCurrency(finalIncome));
+        }
+
+        function formatCurrency(num) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Math.round(num));
+        }
+
+        // --- CHARTS CONFIG ---
+        let costInited = false, curveInited = false, riskInited = false, adminInited = false;
+
+        function renderCostCharts() {
+            if (costInited) return;
+            const opt = { responsive: true, maintainAspectRatio: false, cutout: '80%', plugins: { legend: { position: 'bottom', labels: { boxWidth: 8, font: { size: 10 } } } } };
+            const c1 = document.getElementById('chartSaaS'), c2 = document.getElementById('chartService'), c3 = document.getElementById('chartRenew');
+            if (c1) new Chart(c1, { type: 'doughnut', data: { labels: ['Sales (45%)', 'Ops (5%)', 'Margin (50%)'], datasets: [{ data: [45, 5, 50], backgroundColor: ['#2563EB', '#D97706', '#E2E8F0'], borderWidth: 0 }] }, options: opt });
+            if (c2) new Chart(c2, { type: 'doughnut', data: { labels: ['Direct (15%)', 'Team (5%)', 'Margin (80%)'], datasets: [{ data: [15, 5, 80], backgroundColor: ['#059669', '#2563EB', '#E2E8F0'], borderWidth: 0 }] }, options: opt });
+            if (c3) new Chart(c3, { type: 'doughnut', data: { labels: ['Reward (13%)', 'Cost (2%)', 'Margin (85%)'], datasets: [{ data: [13, 2, 85], backgroundColor: ['#D97706', '#64748B', '#E2E8F0'], borderWidth: 0 }] }, options: opt });
+            costInited = true;
+        }
+
+        function renderActiveCurve() {
+            if (curveInited) return;
+            const ctx = document.getElementById('activeCurveChart');
+            if (ctx) new Chart(ctx, { type: 'line', data: { labels: [0, 25, 49, 50, 75, 100, 150], datasets: [{ label: '% Trả Thụ Động', data: [0, 0, 0, 50, 75, 100, 100], borderColor: '#2563EB', backgroundColor: 'rgba(37, 99, 235, 0.1)', fill: true, tension: 0, pointRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 110, ticks: { callback: v => v + '%' } } } } });
+            curveInited = true;
+        }
+
+        function renderRiskRadar() {
+            if (riskInited) return;
+            const ctx = document.getElementById('riskRadarChart');
+            if (ctx) new Chart(ctx, { type: 'radar', data: { labels: ['Turnover', 'Chay Ì', 'Vỡ Quỹ', 'Chất lượng', 'Vận hành'], datasets: [{ label: 'Trước KS', data: [90, 85, 60, 70, 50], borderColor: '#EF4444', backgroundColor: 'rgba(239, 68, 68, 0.2)' }, { label: 'Sau KS', data: [20, 10, 5, 15, 10], borderColor: '#10B981', backgroundColor: 'rgba(16, 185, 129, 0.2)' }] }, options: { responsive: true, maintainAspectRatio: false, scales: { r: { suggestedMin: 0, suggestedMax: 100, ticks: { display: false } } } } });
+            riskInited = true;
+        }
+
+        function renderAdminCharts() {
+            if (adminInited) return;
+            const ctx1 = document.getElementById('revenueHistoryChart');
+            const ctx2 = document.getElementById('contractDistributionChart');
+            
+            if (ctx1) new Chart(ctx1, { type: 'line', data: { labels: ['T8', 'T9', 'T10', 'T11', 'T12', 'T1'], datasets: [{ label: 'Doanh Thu', data: [1.2, 1.5, 1.4, 1.8, 2.1, 2.4], borderColor: '#2563EB', tension: 0.4, fill: true, backgroundColor: 'rgba(37, 99, 235, 0.05)' }] }, options: { responsive: true, maintainAspectRatio: false } });
+            if (ctx2) new Chart(ctx2, { type: 'bar', data: { labels: ['SaaS', 'Dịch vụ', 'Renew'], datasets: [{ label: 'Tỷ trọng', data: [65, 20, 15], backgroundColor: ['#2563EB', '#059669', '#D97706'] }] }, options: { responsive: true, maintainAspectRatio: false } });
+            adminInited = true;
+        }
+
+        // Initialize
+        window.onload = () => {
+            showSection('overview');
+            calculateIncome();
+        };
+    </script>
+</body>
+</html>
